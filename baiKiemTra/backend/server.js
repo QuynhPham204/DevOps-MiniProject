@@ -18,7 +18,8 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  charset: 'utf8mb4'
 });
 
 // ============== ENDPOINTS ==============
@@ -30,6 +31,7 @@ app.get('/health', (req, res) => {
 
 // 2. About Endpoint (Student Info)
 app.get('/about', (req, res) => {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8'); 
   res.json({
     studentName: process.env.STUDENT_NAME,
     studentId: process.env.STUDENT_ID,
@@ -38,19 +40,19 @@ app.get('/about', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
-
 // 3. GET - Lấy danh sách tất cả sinh viên
 app.get('/api/students', async (req, res) => {
   try {
     const connection = await pool.getConnection();
     const [rows] = await connection.query('SELECT * FROM students');
     connection.release();
+    
+    res.setHeader('Content-Type', 'application/json; charset=utf-8'); 
     res.json(rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-
 // 4. GET - Lấy sinh viên theo ID
 app.get('/api/students/:id', async (req, res) => {
   try {
