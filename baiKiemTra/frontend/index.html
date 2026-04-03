@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevOps Student Management</title>
+    <style>
+      :root {
+        --bg-start: #1a2a6c;
+        --bg-end: #b21f1f;
+        --card-bg: rgba(255, 255, 255, 0.92);
+        --text-primary: #1f2937;
+        --text-secondary: #4b5563;
+        --accent: #4f46e5;
+        --accent-soft: #eef2ff;
+        --danger: #dc2626;
+        --success: #16a34a;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-primary);
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(255, 255, 255, 0.18),
+            transparent 25%
+          ),
+          linear-gradient(135deg, var(--bg-start), var(--bg-end));
+        padding: 24px;
+      }
+
+      .container {
+        max-width: 1160px;
+        margin: 0 auto;
+        display: grid;
+        gap: 24px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 24px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 20px 60px rgba(15, 23, 42, 0.18);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .brand .logo {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: rgba(255, 255, 255, 0.92);
+        color: var(--accent);
+        font-weight: 800;
+        font-size: 1.05rem;
+        box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.12);
+      }
+
+      .brand h1 {
+        font-size: 1.3rem;
+        line-height: 1.15;
+        color: white;
+      }
+
+      .status-chip {
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.18);
+        color: #f8fafc;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+      }
+
+      .hero {
+        display: grid;
+        gap: 20px;
+        padding: 30px;
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(14px);
+        box-shadow: 0 40px 80px rgba(15, 23, 42, 0.14);
+      }
+
+      .hero h2 {
+        color: white;
+        font-size: clamp(2rem, 4vw, 3rem);
+        line-height: 1.05;
+      }
+
+      .hero p {
+        max-width: 760px;
+        color: #e5e7eb;
+        font-size: 1rem;
+        line-height: 1.8;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .stat-card {
+        padding: 18px 20px;
+        border-radius: 22px;
+        background: var(--card-bg);
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      }
+
+      .stat-card label {
+        display: block;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+      }
+
+      .stat-card span {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      .board {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 24px;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: 28px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        padding: 30px;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.09);
+      }
+
+      .card h3 {
+        font-size: 1.35rem;
+        margin-bottom: 18px;
+        color: var(--accent);
+      }
+
+      form {
+        display: grid;
+        gap: 16px;
+      }
+
+      input,
+      button {
+        width: 100%;
+        border-radius: 16px;
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        font-size: 1rem;
+        transition: all 0.25s ease;
+      }
+
+      input {
+        padding: 16px 18px;
+        background: rgba(255, 255, 255, 0.92);
+        color: var(--text-primary);
+      }
+
+      input:focus {
+        outline: none;
+        border-color: rgba(79, 70, 229, 0.55);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+      }
+
+      button {
+        padding: 16px 18px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 18px 30px rgba(99, 102, 241, 0.22);
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 22px 34px rgba(99, 102, 241, 0.28);
+      }
+
+      .status {
+        padding: 16px 18px;
+        border-radius: 18px;
+        display: none;
+        font-weight: 600;
+      }
+
+      .status.show {
+        display: block;
+      }
+
+      .status.error {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .status.success {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .student-list {
+        display: grid;
+        gap: 16px;
+      }
+
+      .student-card {
+        padding: 22px;
+        border-radius: 24px;
+        background: #ffffff;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 18px;
+        align-items: center;
+      }
+
+      .student-details {
+        display: grid;
+        gap: 10px;
+      }
+
+      .student-name {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      .student-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+      }
+
+      .student-meta span {
+        background: var(--accent-soft);
+        padding: 8px 12px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .delete-btn {
+        min-width: 108px;
+        border-radius: 16px;
+        border: none;
+        background: rgba(239, 68, 68, 0.14);
+        color: var(--danger);
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      .delete-btn:hover {
+        background: rgba(239, 68, 68, 0.25);
+      }
+
+      .loading {
+        padding: 24px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--accent);
+        text-align: center;
+        font-weight: 600;
+      }
+
+      @media (max-width: 960px) {
+        .board {
+          grid-template-columns: 1fr;
+        }
+        .stats-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 680px) {
+        .topbar,
+        .hero,
+        .card {
+          padding: 20px;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">DS</div>
+          <div>
+            <h1>DevOps Student UI</h1>
+            <p
+              style="
+                color: rgba(255, 255, 255, 0.78);
+                font-size: 0.95rem;
+                margin-top: 4px;
+              "
+            >
+              Giao diện quản lý sinh viên hiện đại và rõ ràng.
+            </p>
+          </div>
+        </div>
+        <div class="status-chip">
+          <span id="serverStatus">Checking...</span>
+        </div>
+      </div>
+
+      <section class="hero">
+        <h2>Quản lý sinh viên dễ dàng, trực quan và nhanh chóng</h2>
+        <p>
+          Thêm, xem và xóa sinh viên ngay trong giao diện hiện đại. Mọi dữ liệu
+          đều được đồng bộ trực tiếp với backend, giúp trải nghiệm thân thiện
+          trên cả máy tính và thiết bị di động.
+        </p>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <label>Họ tên sinh viên</label>
+            <span id="studentName">Loading...</span>
+          </div>
+          <div class="stat-card">
+            <label>Mã số sinh viên</label>
+            <span id="studentId">Loading...</span>
+          </div>
+          <div class="stat-card">
+            <label>Lớp</label>
+            <span id="studentClass">Loading...</span>
+          </div>
+          <div class="stat-card">
+            <label>Trạng thái server</label>
+            <span id="serverStatusLabel">Checking...</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="board">
+        <article class="card">
+          <h3>Thêm sinh viên mới</h3>
+          <div class="status" id="formStatus"></div>
+          <form id="addStudentForm">
+            <input type="text" id="name" placeholder="Họ tên" required />
+            <input type="email" id="email" placeholder="Email" required />
+            <input
+              type="tel"
+              id="phone"
+              placeholder="Số điện thoại (tùy chọn)"
+            />
+            <input
+              type="text"
+              id="major"
+              placeholder="Chuyên ngành (tùy chọn)"
+            />
+            <button type="submit">Thêm Sinh Viên</button>
+          </form>
+        </article>
+
+        <article class="card">
+          <h3>Danh sách sinh viên</h3>
+          <div id="studentList" class="student-list">
+            <div class="loading">Đang tải dữ liệu...</div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <script>
+      const API_BASE_URL = "http://localhost:3000";
+
+      async function updateServerStatusLabel(statusText, color) {
+        const statusChip = document.getElementById("serverStatus");
+        const statusLabel = document.getElementById("serverStatusLabel");
+        statusChip.textContent = statusText;
+        statusChip.style.color = color;
+        if (statusLabel) {
+          statusLabel.textContent = statusText;
+          statusLabel.style.color = color;
+        }
+      }
+
+      async function loadAboutInfo() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/about`);
+          const data = await response.json();
+          document.getElementById("studentName").textContent = data.studentName;
+          document.getElementById("studentId").textContent = data.studentId;
+          document.getElementById("studentClass").textContent = data.class;
+        } catch (error) {
+          console.error("Error loading about info:", error);
+        }
+      }
+
+      async function checkServerStatus() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/health`);
+          const data = await response.json();
+          if (data.status === "ok") {
+            updateServerStatusLabel("✅ Online", "#bbf7d0");
+          }
+        } catch (error) {
+          updateServerStatusLabel("❌ Offline", "#fecaca");
+        }
+      }
+
+      async function loadStudents() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/students`);
+          const students = await response.json();
+          const list = document.getElementById("studentList");
+
+          if (students.length === 0) {
+            list.innerHTML = '<div class="loading">Chưa có sinh viên nào</div>';
+            return;
+          }
+
+          list.innerHTML = students
+            .map(
+              (student) => `
+                    <div class="student-card">
+                        <div class="student-details">
+                            <div class="student-name">${student.name}</div>
+                            <div class="student-meta">
+                                <span>📧 ${student.email}</span>
+                                ${student.phone ? `<span>📱 ${student.phone}</span>` : ""}
+                                ${student.major ? `<span>🎓 ${student.major}</span>` : ""}
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteStudent(${student.id})">Xóa</button>
+                    </div>
+                `,
+            )
+            .join("");
+        } catch (error) {
+          document.getElementById("studentList").innerHTML =
+            `<div class="loading" style="color:#b91c1c;">Lỗi: ${error.message}</div>`;
+        }
+      }
+
+      document
+        .getElementById("addStudentForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const student = {
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            phone: document.getElementById("phone").value,
+            major: document.getElementById("major").value,
+          };
+
+          try {
+            const response = await fetch(`${API_BASE_URL}/api/students`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(student),
+            });
+
+            const data = await response.json();
+            const statusDiv = document.getElementById("formStatus");
+
+            if (response.ok) {
+              statusDiv.textContent = "✅ Thêm sinh viên thành công!";
+              statusDiv.classList.remove("error");
+              statusDiv.classList.add("show", "success");
+              document.getElementById("addStudentForm").reset();
+              loadStudents();
+            } else {
+              statusDiv.textContent =
+                "❌ " + (data.error || "Lỗi khi thêm sinh viên");
+              statusDiv.classList.remove("success");
+              statusDiv.classList.add("show", "error");
+            }
+            setTimeout(
+              () => statusDiv.classList.remove("show", "error", "success"),
+              3000,
+            );
+          } catch (error) {
+            const statusDiv = document.getElementById("formStatus");
+            statusDiv.textContent = "❌ Lỗi: " + error.message;
+            statusDiv.classList.remove("success");
+            statusDiv.classList.add("show", "error");
+          }
+        });
+
+      async function deleteStudent(id) {
+        if (!confirm("Bạn có chắc chắn muốn xóa sinh viên này?")) return;
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/students/${id}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            loadStudents();
+          } else {
+            alert("Lỗi khi xóa sinh viên");
+          }
+        } catch (error) {
+          alert("Lỗi: " + error.message);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadAboutInfo();
+        checkServerStatus();
+        loadStudents();
+        setInterval(checkServerStatus, 5000);
+      });
+    </script>
+  </body>
+</html>
