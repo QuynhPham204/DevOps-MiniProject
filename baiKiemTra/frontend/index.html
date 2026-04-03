@@ -293,7 +293,20 @@
         text-align: center;
         font-weight: 600;
       }
+      #searchInput {
+        padding: 14px 18px;
+        margin-bottom: 16px;
+        border-radius: 16px;
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        font-size: 1rem;
+        width: 100%;
+       }
 
+       #searchInput:focus {
+        outline: none;
+        border-color: rgba(79, 70, 229, 0.55);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+       }
       @media (max-width: 960px) {
         .board {
           grid-template-columns: 1fr;
@@ -388,10 +401,12 @@
         </article>
 
         <article class="card">
-          <h3>Danh sách sinh viên</h3>
-          <div id="studentList" class="student-list">
-            <div class="loading">Đang tải dữ liệu...</div>
-          </div>
+            <h3>Danh sách sinh viên</h3>
+            <!-- Thanh tìm kiếm -->
+            <input type="text" id="searchInput" placeholder="Tìm kiếm sinh viên theo tên, email hoặc chuyên ngành..." />
+            <div id="studentList" class="student-list">
+                <div class="loading">Đang tải dữ liệu...</div>
+            </div>
         </article>
       </div>
     </div>
@@ -538,6 +553,20 @@
         loadStudents();
         setInterval(checkServerStatus, 5000);
       });
+
+            // Hàm lọc danh sách sinh viên
+        function filterStudents(keyword) {
+        const studentCards = document.querySelectorAll(".student-card");
+        studentCards.forEach((card) => {
+            const text = card.textContent.toLowerCase();
+            card.style.display = text.includes(keyword.toLowerCase()) ? "grid" : "none";
+        });
+        }
+
+        // Lắng nghe input tìm kiếm
+        document.getElementById("searchInput").addEventListener("input", (e) => {
+        filterStudents(e.target.value);
+        });
     </script>
   </body>
 </html>
