@@ -1,0 +1,43 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Environment variables
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Temp files
+/tmp
+.DS_Store
+
+# IDE / OS
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Docker
+*.tgz
+
+# Python virtual env (if exists)
+.venv/
+
+# Build artifacts (if any)
+dist/
+build/
+**/node_modules/
+
+# MySQL data (if mounted or local)
+**/mysql-data/
